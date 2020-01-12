@@ -2,6 +2,7 @@
 
 #include "string.hpp"
 #include <clang-c/Index.h>
+#include <ostream>
 
 namespace color_coded
 {
@@ -47,9 +48,9 @@ namespace color_coded
     {
       location ret;
       clang_getPresumedLocation(
-          start, &ret.filename.get(), &ret.start_line, &ret.start_col);
+          start, ret.filename.get(), &ret.start_line, &ret.start_col);
       clang_getPresumedLocation(
-          end, &ret.filename.get(), &ret.end_line, &ret.end_col);
+          end, ret.filename.get(), &ret.end_line, &ret.end_col);
       return ret;
     }
 

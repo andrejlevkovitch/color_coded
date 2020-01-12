@@ -1,30 +1,34 @@
 #pragma once
 
-#include "resource.hpp"
 #include <algorithm>
 #include <clang-c/CXString.h>
+#include <memory>
 
 namespace color_coded
 {
   namespace clang
   {
-    namespace detail
+    class string final : public std::shared_ptr<CXString>
     {
-      template <>
-      struct resource_impl<CXString> {
-        char const *c_str() const
-        {
-          auto const &self(static_cast<resource<CXString> const &>(*this));
-          return clang_getCString(self.get());
-        }
+      static void destroyer(CXString *str)
+      {
+        clang_disposeString(*str);
+        delete str;
+      }
 
-        static void deleter(CXString &str)
-        {
-          clang_disposeString(str);
-        }
-      };
-    } // namespace detail
+    public:
+      string()
+          : std::shared_ptr<CXString>{new CXString, destroyer}
+      {}
 
-    using string = resource<CXString>;
+      string(CXString imp)
+          : std::shared_ptr<CXString>{new CXString{imp}, destroyer}
+      {}
+
+      const char *c_str() const
+      {
+        return reinterpret_cast<const char *>(this->get()->data);
+      }
+    };
   } // namespace clang
 } // namespace color_coded

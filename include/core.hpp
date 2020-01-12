@@ -10,7 +10,6 @@
 #include "vim/commands.hpp"
 #include "clang/compile.hpp"
 #include "clang/index.hpp"
-#include "clang/resource.hpp"
 #include "clang/source_range.hpp"
 #include "clang/string.hpp"
 #include "clang/token.hpp"
@@ -46,7 +45,7 @@ namespace color_coded
     inline std::string const &last_error(std::string const &e = "")
     {
       static std::string error{no_errors};
-      if (e.size()) {
+      if (!e.empty()) {
         error = e;
       }
       return error;
@@ -119,3 +118,4 @@ namespace color_coded
     }
   } // namespace core
 } // namespace color_coded
+

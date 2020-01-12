@@ -1,6 +1,7 @@
 #pragma once
 
 #include "conf/args_view.hpp"
+#include "diagnostic.hpp"
 #include "index.hpp"
 #include "string.hpp"
 #include "token_pack.hpp"
@@ -23,10 +24,10 @@ namespace color_coded
       using std::runtime_error::runtime_error;
     };
 
-    translation_unit compile(conf::args_view args, std::string const &filename)
+    translation_unit compile(const conf::args_view &args,
+                             std::string const &    filename)
     {
-      auto const index(
-          std::make_shared<index>(clang_createIndex(false, false)));
+      index_ptr              index{clang_createIndex(false, false)};
       translation_unit const trans_unit{args, index, filename};
       auto &                 tu(trans_unit.impl);
 
@@ -34,15 +35,15 @@ namespace color_coded
       if (diags) {
         std::stringstream ss;
         for (std::size_t i{}; i != diags; ++i) {
-          CXDiagnostic const diag{clang_getDiagnostic(tu, i)};
-          if (clang_getDiagnosticSeverity(diag) >= CXDiagnostic_Error) {
+          diagnostic const diag{clang_getDiagnostic(tu, i)};
+          if (clang_getDiagnosticSeverity(diag.get()) >= CXDiagnostic_Error) {
             string const str{clang_formatDiagnostic(
-                diag, clang_defaultDiagnosticDisplayOptions())};
+                diag.get(), clang_defaultDiagnosticDisplayOptions())};
             ss << str.c_str() << '\n';
           }
         }
         auto const str(ss.str());
-        if (str.size()) {
+        if (!str.empty()) {
           core::last_error(str);
           if (!tu) {
             throw compilation_error{str};

@@ -17,7 +17,7 @@ namespace color_coded
                        index_ptr const        ind,
                        std::string const &    file)
           : impl{clang_parseTranslationUnit(
-                ind->get(),
+                ind.get(),
                 file.c_str(),
                 args.data(),
                 args.size(),

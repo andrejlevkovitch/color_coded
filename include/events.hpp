@@ -49,7 +49,7 @@ namespace color_coded
                       std::string const &data)
     {
       auto &buf(core::buffers()[file]);
-      if (buf.group.size()) {
+      if (!buf.group.empty()) {
         vim::apply(buf);
       }
       core::queue().push({file, filetype, data});
