@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 
 project(color_coded)
 
@@ -31,9 +31,6 @@ execute_process(
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )
 
-# C++14
-include(cmake/cxx14.cmake)
-
 # Boost
 include(cmake/boost.cmake)
 
@@ -65,7 +62,14 @@ if ((NOT LLVM_FOUND) OR (NOT CLANG_FOUND) OR (${DOWNLOAD_CLANG}))
 	find_package(LibClang REQUIRED)
 endif()
 
-include_directories(
+# Allow easier dynamic linking with clang
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+set(CMAKE_INSTALL_RPATH ${LLVM_LIB_PATH})
+
+include(cmake/generate_sources.cmake)
+include(cmake/check_luajit.cmake)
+add_library(${PROJECT_NAME} SHARED src/main.cpp)
+target_include_directories(${PROJECT_NAME} PRIVATE
   include
   ${LLVM_INCLUDE_DIRS}
   ${CLANG_INCLUDE_DIRS}
@@ -76,15 +80,8 @@ include_directories(
   $ENV{PWD}/include/
 
   ${CMAKE_CURRENT_BINARY_DIR} # for generating includes
-)
-
-# Allow easier dynamic linking with clang
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-set(CMAKE_INSTALL_RPATH ${LLVM_LIB_PATH})
-
-include(cmake/generate_sources.cmake)
-include(cmake/check_luajit.cmake)
-add_library(${PROJECT_NAME} SHARED src/main.cpp)
+  )
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
 
 add_custom_target(${PROJECT_NAME}_track_api
   COMMAND ${CMAKE_CURRENT_LIST_DIR}/lib/track_api
@@ -129,18 +126,24 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_LIST_DIR})
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_LIST_DIR})
 
 # Tests
-include_directories(
+add_executable(${PROJECT_NAME}_config_test ${CMAKE_CURRENT_LIST_DIR}/test/src/config/main.cpp)
+target_include_directories(${PROJECT_NAME}_config_test PRIVATE
+  include
+  ${CLANG_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR}
+
   lib/jest/include
   test/include
-)
-add_definitions(
--D__STDC_CONSTANT_MACROS
--D__STDC_LIMIT_MACROS
-)
+  )
+target_compile_definitions(${PROJECT_NAME}_config_test PRIVATE
+  -D__STDC_CONSTANT_MACROS
+  -D__STDC_LIMIT_MACROS
+  )
 if(${DOWNLOAD_CLANG})
-    add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+  target_compile_definitions(${PROJECT_NAME}_config_test PRIVATE
+    -D_GLIBCXX_USE_CXX11_ABI=0
+    )
 endif()
-add_executable(${PROJECT_NAME}_config_test ${CMAKE_CURRENT_LIST_DIR}/test/src/config/main.cpp)
 target_link_libraries(${PROJECT_NAME}_config_test
   ${CLANG_LIBS}
   ${LLVM_LIBRARIES}
