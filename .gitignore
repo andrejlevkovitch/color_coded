@@ -25,3 +25,7 @@
 
 # Personal notes
 NOTES
+
+# config files must be generated (see YCM-Generator)
+.ycm_extra_conf.py
+.color_coded
