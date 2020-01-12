@@ -45,6 +45,7 @@ namespace color_coded
                               clang_defaultDiagnosticDisplayOptions()) };
             ss << str.c_str() << '\n';
           }
+          clang_disposeDiagnostic(diag);
         }
         auto const str(ss.str());
         if(str.size())
