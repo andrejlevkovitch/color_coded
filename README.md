@@ -112,6 +112,18 @@ make clean && make clean_clang
 
 For various compatibility reasons, color_coded will attempt to download a known version of clang. This may add time to your configuration process, but it offers more stability across multiple platforms. Avoiding this is not officially supported, but documented [here](https://github.com/jeaye/color_coded#how-can-i-use-a-custom-llvmclang-setup).
 
+If you want to compile with native clang then you have to set two variables to cmake:
+  - `DOWNLOAD_CLANG=FALSE` - we don't want to load clang
+  - `CLANG_VERSION` - unfortunately we can not get current version of clang by cmake, so you need set it manualy
+
+For example:
+```
+cd ~/.vim/bundle/color_coded
+mkdir build && cd build
+cmake -DDOWNLOAD_CLANG=FALSE -DCLANG_VERSION="9.0.1"
+cmake --build . --target install
+```
+
 **ANOTHER NOTE:** color_coded doesn't reliably support luajit. More informatively, [luajit doesn't reliably support being embedded in shared libraries](https://www.freelists.org/post/luajit/OSx-load-luajit-64bit-from-plugin).
 
 Usage

@@ -72,7 +72,9 @@ namespace color_coded
         "-isystem/opt/local/include",
         environment<env::tag>::clang_include_lib,
         environment<env::tag>::clang_resource_dir, // internal libraries and intrinsics
-        "-isystem/usr/include",
+
+        // XXX when compile with native clang it can be a cause of compile error
+        //"-isystem/usr/include",
 #ifdef __APPLE__
         "-isystem/System/Library/Frameworks",
         "-isystem/Library/Frameworks",
