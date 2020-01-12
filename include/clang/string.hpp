@@ -1,9 +1,8 @@
 #pragma once
 
+#include "resource.hpp"
 #include <algorithm>
 #include <clang-c/CXString.h>
-
-#include "resource.hpp"
 
 namespace color_coded
 {
@@ -12,19 +11,20 @@ namespace color_coded
     namespace detail
     {
       template <>
-      struct resource_impl<CXString>
-      {
-        char const * c_str() const
+      struct resource_impl<CXString> {
+        char const *c_str() const
         {
-          auto const &self(static_cast<resource<CXString> const&>(*this));
+          auto const &self(static_cast<resource<CXString> const &>(*this));
           return clang_getCString(self.get());
         }
 
         static void deleter(CXString &str)
-        { clang_disposeString(str); }
+        {
+          clang_disposeString(str);
+        }
       };
-    }
+    } // namespace detail
 
     using string = resource<CXString>;
-  }
-}
+  } // namespace clang
+} // namespace color_coded

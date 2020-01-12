@@ -2,8 +2,8 @@
 
 extern "C"
 {
-#include <lua.h>
 #include <lauxlib.h>
+#include <lua.h>
 #include <lualib.h>
 }
 
@@ -13,15 +13,18 @@ namespace color_coded
 {
   namespace lua
   {
-    lua_State* state(lua_State * const lua = nullptr)
+    lua_State *state(lua_State *const lua = nullptr)
     {
       static lua_State *lua_{};
-      if(lua)
-      { lua_ = lua; }
+      if (lua) {
+        lua_ = lua;
+      }
       return lua_;
     }
 
     void eval(std::string const &str)
-    { luaL_dostring(state(), str.c_str()); }
-  }
-}
+    {
+      luaL_dostring(state(), str.c_str());
+    }
+  } // namespace lua
+} // namespace color_coded

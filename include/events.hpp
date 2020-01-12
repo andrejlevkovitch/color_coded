@@ -9,8 +9,7 @@ namespace color_coded
     inline bool pull(std::string const &file)
     {
       auto const pulled(core::queue().pull(file));
-      if(pulled)
-      {
+      if (pulled) {
         auto &buf(core::buffers()[pulled->name]);
         buf.group = std::move(pulled->group);
         return file == pulled->name;
@@ -19,33 +18,41 @@ namespace color_coded
     }
 
     inline void push(std::string const &file,
-                     std::string const &filetype, std::string const &data)
+                     std::string const &filetype,
+                     std::string const &data)
     {
-      if(pull(file))
-      { vim::apply(core::buffers()[file]); }
-      core::queue().push({ file, filetype, data });
+      if (pull(file)) {
+        vim::apply(core::buffers()[file]);
+      }
+      core::queue().push({file, filetype, data});
     }
 
-    inline void moved(std::string const &file, std::size_t const begin,
-                      std::size_t const end)
+    inline void moved(std::string const &file,
+                      std::size_t const  begin,
+                      std::size_t const  end)
     {
       auto &buf(core::buffers()[file]);
       buf.new_begin = begin;
-      buf.new_end = end;
+      buf.new_end   = end;
 
-      if(pull(file)) /* Pulled new info. */
-      { vim::apply(buf); }
-      else /* See if the move requires another application. */
-      { vim::try_apply(buf); }
+      if (pull(file)) /* Pulled new info. */
+      {
+        vim::apply(buf);
+      } else /* See if the move requires another application. */
+      {
+        vim::try_apply(buf);
+      }
     }
 
     inline void enter(std::string const &file,
-                      std::string const &filetype, std::string const &data)
+                      std::string const &filetype,
+                      std::string const &data)
     {
       auto &buf(core::buffers()[file]);
-      if(buf.group.size())
-      { vim::apply(buf); }
-      core::queue().push({ file, filetype, data });
+      if (buf.group.size()) {
+        vim::apply(buf);
+      }
+      core::queue().push({file, filetype, data});
     }
 
     inline void destroy(std::string const &file)
@@ -55,9 +62,13 @@ namespace color_coded
     }
 
     inline void exit()
-    { core::queue().join(); }
+    {
+      core::queue().join();
+    }
 
     inline std::string last_error()
-    { return core::last_error(); }
-  }
-}
+    {
+      return core::last_error();
+    }
+  } // namespace event
+} // namespace color_coded

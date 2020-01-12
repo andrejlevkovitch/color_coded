@@ -1,22 +1,20 @@
 #pragma once
 
-#include <clang-c/Index.h>
-
 #include "string.hpp"
+#include <clang-c/Index.h>
 
 namespace color_coded
 {
   namespace clang
   {
-    struct location
-    {
+    struct location {
       clang::string filename{};
-      CXFile file{};
-      unsigned start_line{}, start_col{}, start_offset{};
-      unsigned end_line{}, end_col{}, end_offset{};
+      CXFile        file{};
+      unsigned      start_line{}, start_col{}, start_offset{};
+      unsigned      end_line{}, end_col{}, end_offset{};
     };
 
-    std::ostream& operator <<(std::ostream &os, location const &loc)
+    std::ostream &operator<<(std::ostream &os, location const &loc)
     {
       //{
       //  auto const c_str(loc.filename.c_str());
@@ -37,12 +35,10 @@ namespace color_coded
                                            CXSourceLocation const end)
     {
       location ret;
-      clang_getSpellingLocation(start, &ret.file,
-                                &ret.start_line, &ret.start_col,
-                                &ret.start_offset);
-      clang_getSpellingLocation(end, &ret.file,
-                                &ret.end_line, &ret.end_col,
-                                &ret.end_offset);
+      clang_getSpellingLocation(
+          start, &ret.file, &ret.start_line, &ret.start_col, &ret.start_offset);
+      clang_getSpellingLocation(
+          end, &ret.file, &ret.end_line, &ret.end_col, &ret.end_offset);
       return ret;
     }
 
@@ -50,10 +46,10 @@ namespace color_coded
                                            CXSourceLocation const end)
     {
       location ret;
-      clang_getPresumedLocation(start, &ret.filename.get(),
-                                &ret.start_line, &ret.start_col);
-      clang_getPresumedLocation(end, &ret.filename.get(),
-                                &ret.end_line, &ret.end_col);
+      clang_getPresumedLocation(
+          start, &ret.filename.get(), &ret.start_line, &ret.start_col);
+      clang_getPresumedLocation(
+          end, &ret.filename.get(), &ret.end_line, &ret.end_col);
       return ret;
     }
 
@@ -61,11 +57,11 @@ namespace color_coded
                                             CXSourceLocation const end)
     {
       location ret;
-      clang_getExpansionLocation(start, &ret.file, &ret.start_line,
-                                 &ret.start_col, &ret.start_offset);
-      clang_getExpansionLocation(end, &ret.file, &ret.end_line,
-                                 &ret.end_col, &ret.end_offset);
+      clang_getExpansionLocation(
+          start, &ret.file, &ret.start_line, &ret.start_col, &ret.start_offset);
+      clang_getExpansionLocation(
+          end, &ret.file, &ret.end_line, &ret.end_col, &ret.end_offset);
       return ret;
     }
-  }
-}
+  } // namespace clang
+} // namespace color_coded
