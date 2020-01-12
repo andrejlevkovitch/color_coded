@@ -120,7 +120,7 @@ For example:
 ```
 cd ~/.vim/bundle/color_coded
 mkdir build && cd build
-cmake -DDOWNLOAD_CLANG=FALSE -DCLANG_VERSION="9.0.1"
+cmake -DDOWNLOAD_CLANG=FALSE -DCLANG_VERSION=9.0.1
 cmake --build . --target install
 ```
 
