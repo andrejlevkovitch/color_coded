@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 #include <clang-c/Index.h>
 
 #include "string.hpp"

@@ -252,8 +252,6 @@ namespace color_coded
             return ""; /* Allow vim to do this. */
           case CXCursor_CharacterLiteral:
             return "Character";
-          case CXType_Unexposed:
-            return "";
           default:
             return "";
             //return "Error4 " + std::to_string(kind);
