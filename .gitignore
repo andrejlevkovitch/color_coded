@@ -6,7 +6,6 @@
 # Generated build files
 /Makefile
 /.downloading_clang
-/include/env/impl.hpp
 
 # YCM
 *.pyc

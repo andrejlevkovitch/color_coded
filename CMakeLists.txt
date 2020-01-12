@@ -74,6 +74,8 @@ include_directories(
   ${ZLIB_INCLUDE_PATH}
 
   $ENV{PWD}/include/
+
+  ${CMAKE_CURRENT_BINARY_DIR} # for generating includes
 )
 
 # Allow easier dynamic linking with clang
